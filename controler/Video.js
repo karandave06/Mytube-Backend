@@ -117,8 +117,8 @@ exports.trend = async (req, res, next) => {
 //  suscribe -------------------
 
 exports.sub = async (req, res, next) => {
-  const id = req.body.token;
-  console.log(req.body);
+  const id = req.body.body;
+  console.log(req.body.body);
   try {
     const user = await User.findById(id);
     const suscribedChannels = user.suscribedUsers;
