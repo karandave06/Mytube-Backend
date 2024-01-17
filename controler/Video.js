@@ -1,9 +1,9 @@
 const { User } = require("../models/User.js");
 const { Video } = require("../models/Video.js");
-
+const NodeCache = require("node-cache");
 //  add Video -------------------
-exports.addVideo = async (req, res, next) => {
 
+exports.addVideo = async (req, res, next) => {
   const newVideo = new Video({ userId: req.body.token, ...req.body });
 
   try {
@@ -42,7 +42,6 @@ exports.updateVideo = async (req, res, next) => {
 
 exports.gateVideo = async (req, res, next) => {
   const id = req.params.id;
- 
 
   const video = await Video.findById(id);
 
@@ -83,12 +82,21 @@ exports.addViews = async (req, res, next) => {
 };
 
 //  random videos-------------------
-
+const nodeCache = new NodeCache();
 exports.random = async (req, res, next) => {
   try {
     const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
+
+    let VideoCache;
+    if (nodeCache.has("videos")) {
+      VideoCache = JSON.parse(nodeCache.get("videos"));
+    } else {
+      VideoCache = await Video.aggregate([{ $sample: { size: 40 } }]);
+      nodeCache.set("videos", JSON.stringify(VideoCache));
+    }
+
     res.status(200);
-    res.send(videos);
+    res.send(VideoCache);
   } catch (error) {
     next(error);
     console.log(error);
@@ -109,13 +117,14 @@ exports.trend = async (req, res, next) => {
 //  suscribe -------------------
 
 exports.sub = async (req, res, next) => {
+  const id = req.body.token;
+  console.log(req.body);
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(id);
     const suscribedChannels = user.suscribedUsers;
     const list = await Promise.all(
       suscribedChannels.map((channelId) => Video.find({ userId: channelId }))
     );
-    
 
     res.status(200).json(list.flat().sort((a, b) => b.createdAt - a.createdAt));
   } catch (error) {
@@ -130,7 +139,6 @@ exports.getByTag = async (req, res, next) => {
   try {
     const videos = await Video.find({ tags: { $in: tags } }).limit(25);
     res.status(200).json(videos);
- 
   } catch (error) {
     next(error);
     console.log(error);

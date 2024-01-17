@@ -12,7 +12,7 @@ const {
   random,
   sub,
   getByTag,
-  getNewVideo,
+  getSubvideo,
 } = require("../controler/Video.js");
 // const {gateVideo} = require("../controler/Video2.js")
 // create a video
@@ -23,8 +23,8 @@ router.get("/find/:id", gateVideo);
 router.put("/view/:id", addViews);
 router.get("/trand", trend);
 router.get("/random", random);
-router.get("/sub", verifyToken, sub);
+router.post("/sub", sub);
 router.get("/tags", getByTag);
-router.get("/search", search);
+router.get("/search", search); 
 // router.get("/get",gateVideo)
 exports.router = router;
