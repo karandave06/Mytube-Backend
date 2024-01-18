@@ -14,7 +14,7 @@ exports.postVideo = async (req, res, next) => {
 
   const video = await Video.findById(id);
 
-  console.log(video)
+ 
   // const user = await Video.findById(id);
   // if(user) {
   //   console.log("founded")

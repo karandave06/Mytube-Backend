@@ -97,6 +97,7 @@ exports.random = async (req, res, next) => {
 
     res.status(200);
     res.send(VideoCache);
+ 
   } catch (error) {
     next(error);
     console.log(error);
@@ -118,7 +119,7 @@ exports.trend = async (req, res, next) => {
 
 exports.sub = async (req, res, next) => {
   const id = req.body.body;
-  console.log(req.body.body);
+  
   try {
     const user = await User.findById(id);
     const suscribedChannels = user.suscribedUsers;

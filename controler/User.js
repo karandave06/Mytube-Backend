@@ -16,7 +16,6 @@ exports.update = async (req, res, next) => {
       );
 
       res.json(UpdatedUser);
-      
     } catch (error) {
       next(error);
     }
@@ -42,7 +41,6 @@ exports.delate = async (req, res, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    
     const user = await User.findById(req.params.id);
     res.status(200).send(user);
   } catch (error) {}
@@ -67,7 +65,7 @@ exports.suscribe = async (req, res, next) => {
 };
 exports.unsuscribe = async (req, res, next) => {
   const id = req.body.token;
- 
+
   try {
     await User.findByIdAndUpdate(id, {
       $pull: { suscribedUsers: req.params.id },
@@ -82,7 +80,7 @@ exports.unsuscribe = async (req, res, next) => {
 
 exports.like = async (req, res, next) => {
   const id = req.user.id;
- 
+
   const videoId = req.params.videoId;
   try {
     await Video.findByIdAndUpdate(videoId, {
@@ -97,7 +95,7 @@ exports.like = async (req, res, next) => {
 
 exports.like2 = async (req, res, next) => {
   const id = req.params.Id;
-  
+
   res.send("workings");
   try {
     const user = await Video.findById(id);
@@ -112,11 +110,10 @@ exports.like2 = async (req, res, next) => {
 
 exports.dislike2 = async (req, res, next) => {
   const id = req.params.Id;
-   
+
   res.send("workings");
   try {
     const user = await Video.findById(id);
-    
 
     await Video.findByIdAndUpdate(id, {
       $addToSet: { dislike: req.body.token },

@@ -28,7 +28,7 @@ exports.signin = async (req, res) => {
         res.cookie("access_token", token, { httpOnly: true });
         res.status(200).json({ token: token, other });
       } else {
-        res.send("wrond password plase try again");
+        res.status(401).send("wrond password plase try again");
       }
     } else {
       res.status(400).josn("user not found");
