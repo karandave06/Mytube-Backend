@@ -74,8 +74,7 @@ exports.addViews = async (req, res, next) => {
     await Video.findByIdAndUpdate(req.params.id, {
       $inc: { videoViews: 1 },
     });
-
-    res.status(200).josn("The view has been increased");
+    res.status(200).send("The view has been increased");
   } catch (error) {
     next(error);
   }
@@ -87,17 +86,16 @@ exports.random = async (req, res, next) => {
   try {
     const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
 
-    let VideoCache;
-    if (nodeCache.has("videos")) {
-      VideoCache = JSON.parse(nodeCache.get("videos"));
-    } else {
-      VideoCache = await Video.aggregate([{ $sample: { size: 40 } }]);
-      nodeCache.set("videos", JSON.stringify(VideoCache));
-    }
+    // let VideoCache;
+    // if (nodeCache.has("videos")) {
+    //   VideoCache = JSON.parse(nodeCache.get("videos"));
+    // } else {
+    //   VideoCache = await Video.aggregate([{ $sample: { size: 40 } }]);
+    //   nodeCache.set("videos", JSON.stringify(VideoCache));
+    // }
 
     res.status(200);
-    res.send(VideoCache);
- 
+    res.send(videos);
   } catch (error) {
     next(error);
     console.log(error);
@@ -109,7 +107,7 @@ exports.random = async (req, res, next) => {
 exports.trend = async (req, res, next) => {
   try {
     const videos = await Video.find().sort({ videoViews: -1 });
-    res.status(200).josn(videos);
+    res.status(200).send(videos);
   } catch (error) {
     next(error);
   }
@@ -119,7 +117,7 @@ exports.trend = async (req, res, next) => {
 
 exports.sub = async (req, res, next) => {
   const id = req.body.body;
-  
+
   try {
     const user = await User.findById(id);
     const suscribedChannels = user.suscribedUsers;
